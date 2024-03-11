@@ -8,8 +8,8 @@ import (
 // Point represents a point in a multidimensional space.
 // type Point []float64
 type Point struct {
-  x float64
-  y float64
+	x float64
+	y float64
 }
 
 // Cluster represents a cluster of points.
@@ -48,10 +48,9 @@ func KMeans(data []Point, k int) []Cluster {
 
 		newCenters := calculateNewCenters(clusters)
 
-    if converged(clusters, newCenters) {
+		if converged(clusters, newCenters) {
 			break
 		}
-
 
 		for i := range clusters {
 			clusters[i].Center = newCenters[i]
@@ -71,68 +70,68 @@ func initializeClusters(data []Point, k int) []Cluster {
 }
 
 func assignPoints(data []Point, clusters *[]Cluster) {
-  for i := range *clusters {
-    quantPointsInCluster := len((*clusters)[i].Points)
-    if quantPointsInCluster > 0 {
-      (*clusters)[i].Points = make([]Point, 0)
-    }
+	for i := range *clusters {
+		quantPointsInCluster := len((*clusters)[i].Points)
+		if quantPointsInCluster > 0 {
+			(*clusters)[i].Points = make([]Point, 0)
+		}
 	}
 
 	for _, point := range data {
-    var nearestCluster *Cluster = getNearestCluster(point, clusters)
+		var nearestCluster *Cluster = getNearestCluster(point, clusters)
 
-    nearestCluster.Points = append(nearestCluster.Points, point)
+		nearestCluster.Points = append(nearestCluster.Points, point)
 	}
 }
 
 func getNearestCluster(point Point, clusters *[]Cluster) *Cluster {
-  // Start with higher (infinity) and it getting lower
-  lowerDistanceCluster := math.Inf(1)
+	// Start with higher (infinity) and it getting lower
+	lowerDistanceCluster := math.Inf(1)
 
-  targetClusterIndex := 0
+	targetClusterIndex := 0
 
-  for i, cluster := range *clusters {
-    dist := euclideanDistance(point, cluster.Center)
-    if dist < lowerDistanceCluster {
-      lowerDistanceCluster = dist
-      targetClusterIndex = i
-    }
-  }
+	for i, cluster := range *clusters {
+		dist := euclideanDistance(point, cluster.Center)
+		if dist < lowerDistanceCluster {
+			lowerDistanceCluster = dist
+			targetClusterIndex = i
+		}
+	}
 
-  return &(*clusters)[targetClusterIndex]
+	return &(*clusters)[targetClusterIndex]
 }
 
 func calculateNewCenters(clusters []Cluster) []Point {
 	newCenters := make([]Point, len(clusters))
 	for i, cluster := range clusters {
-    newCenters[i] = calculateCenter(&cluster)
+		newCenters[i] = calculateCenter(&cluster)
 	}
 	return newCenters
 }
 
 func calculateCenter(cluster *Cluster) Point {
-		if len(cluster.Points) == 0 {
-      return cluster.Center
-		}
+	if len(cluster.Points) == 0 {
+		return cluster.Center
+	}
 
-    sumX := 0.0
-    sumY := 0.0
-    for _, point := range cluster.Points {
-      sumX += point.x
-      sumY += point.y
-    }
+	sumX := 0.0
+	sumY := 0.0
+	for _, point := range cluster.Points {
+		sumX += point.x
+		sumY += point.y
+	}
 
-    quantPointsInCluster := float64(len(cluster.Points))
+	quantPointsInCluster := float64(len(cluster.Points))
 
-    meanX := sumX / quantPointsInCluster
-    meanY := sumY / quantPointsInCluster
+	meanX := sumX / quantPointsInCluster
+	meanY := sumY / quantPointsInCluster
 
-    return Point{meanX, meanY}
+	return Point{meanX, meanY}
 }
 
 func euclideanDistance(p1, p2 Point) float64 {
-  xDiff := p1.x - p2.x
-  yDiff := p1.y - p2.y
+	xDiff := p1.x - p2.x
+	yDiff := p1.y - p2.y
 
 	sum := (xDiff * xDiff) + (yDiff * yDiff)
 
