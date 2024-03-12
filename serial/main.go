@@ -44,7 +44,7 @@ func KMeans(data []Point, k int) []Cluster {
 	clusters := initializeClusters(data, k)
 
 	for {
-		assignPoints(data, &clusters)
+		assignPoints(data, clusters)
 
 		newCenters := calculateNewCenters(clusters)
 
@@ -69,11 +69,11 @@ func initializeClusters(data []Point, k int) []Cluster {
 	return clusters
 }
 
-func assignPoints(data []Point, clusters *[]Cluster) {
-	for i := range *clusters {
-		quantPointsInCluster := len((*clusters)[i].Points)
+func assignPoints(data []Point, clusters []Cluster) {
+	for i := range clusters {
+		quantPointsInCluster := len(clusters[i].Points)
 		if quantPointsInCluster > 0 {
-			(*clusters)[i].Points = make([]Point, 0)
+			clusters[i].Points = make([]Point, 0)
 		}
 	}
 
@@ -84,13 +84,13 @@ func assignPoints(data []Point, clusters *[]Cluster) {
 	}
 }
 
-func getNearestCluster(point Point, clusters *[]Cluster) *Cluster {
+func getNearestCluster(point Point, clusters []Cluster) *Cluster {
 	// Start with higher (infinity) and it getting lower
 	lowerDistanceCluster := math.Inf(1)
 
 	targetClusterIndex := 0
 
-	for i, cluster := range *clusters {
+	for i, cluster := range clusters {
 		dist := euclideanDistance(point, cluster.Center)
 		if dist < lowerDistanceCluster {
 			lowerDistanceCluster = dist
@@ -98,7 +98,7 @@ func getNearestCluster(point Point, clusters *[]Cluster) *Cluster {
 		}
 	}
 
-	return &(*clusters)[targetClusterIndex]
+	return &clusters[targetClusterIndex]
 }
 
 func calculateNewCenters(clusters []Cluster) []Point {
